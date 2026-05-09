@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reattivo NPL — La casa degli NPL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --b900:#04183A;--b800:#0A2D5C;--b700:#1558A8;--b600:#1E74D4;--b500:#3A9AF5;
+  --b400:#68B5FA;--b300:#9DCDFC;--b200:#BDD9FC;--b100:#E3F0FE;--b50:#F0F7FF;
+  --ink:#0D1A2B;--ink2:#3A5070;--ink3:#7A96B0;--ink4:#B5C7D8;
+  --line:#D8E8F5;--line2:#EBF2F9;--surf:#F4F8FD;--white:#FFFFFF;
+  --green:#0FA96E;--green-lt:#34D399;
+  --gold:#E8A317;--gold-lt:#FFD66B;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--serif:'Playfair Display',serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased;font-size:14px}
+
+.wrap{display:grid;grid-template-columns:1.1fr 1fr;height:100vh}
+
+/* ─── LEFT BRAND PANEL ─── */
+.brand{position:relative;background:linear-gradient(135deg,#020F26 0%,#04183A 30%,#0A2D5C 70%,#1558A8 100%);color:#fff;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:48px 56px}
+
+/* Animated background blobs */
+.brand::before,.brand::after{content:'';position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;will-change:transform}
+.brand::before{width:520px;height:520px;background:radial-gradient(circle,rgba(58,154,245,.45),transparent 65%);top:-150px;right:-150px;animation:float-1 14s ease-in-out infinite}
+.brand::after{width:420px;height:420px;background:radial-gradient(circle,rgba(15,169,110,.30),transparent 65%);bottom:-120px;left:-100px;animation:float-2 18s ease-in-out infinite}
+@keyframes float-1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,30px) scale(1.1)}}
+@keyframes float-2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-30px) scale(1.15)}}
+
+/* Subtle dotted pattern overlay */
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;mask-image:linear-gradient(to bottom,transparent,#000 30%,#000 70%,transparent)}
+
+/* Floating geometric shape (decoration) */
+.deco{position:absolute;top:50%;right:8%;transform:translateY(-50%);width:340px;height:340px;opacity:.18;pointer-events:none;animation:rotate-slow 60s linear infinite}
+.deco svg{width:100%;height:100%}
+@keyframes rotate-slow{from{transform:translateY(-50%) rotate(0deg)}to{transform:translateY(-50%) rotate(360deg)}}
+
+.brand-top{position:relative;z-index:2;display:flex;align-items:center;gap:14px}
+.brand-logo{width:54px;height:54px;border-radius:14px;object-fit:cover;box-shadow:0 0 0 2px rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.4);background:#fff}
+.brand-name{font-size:14px;font-weight:600;letter-spacing:.04em}
+.brand-name span{display:block;font-size:11px;font-weight:400;color:var(--b400);letter-spacing:.08em;margin-top:2px;text-transform:uppercase}
+
+.brand-mid{position:relative;z-index:2;max-width:540px}
+.brand-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(58,154,245,.15);border:1px solid rgba(58,154,245,.3);color:var(--b300);padding:6px 13px;border-radius:30px;font-size:11px;font-weight:500;letter-spacing:.08em;margin-bottom:24px;backdrop-filter:blur(10px)}
+.brand-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--green-lt);box-shadow:0 0 8px var(--green-lt);animation:pulse-g 2s infinite}
+@keyframes pulse-g{0%,100%{opacity:1}50%{opacity:.6}}
+
+.brand-h{font-family:var(--serif);font-size:64px;line-height:1.05;font-weight:400;font-style:italic;letter-spacing:-.02em;margin-bottom:8px;color:#fff}
+.brand-h .accent{background:linear-gradient(135deg,var(--gold-lt),var(--gold) 60%,#FF9C42);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic}
+.brand-sub{font-size:16px;color:rgba(255,255,255,.65);margin-top:18px;line-height:1.6;max-width:480px}
+
+.brand-feat{margin-top:42px;display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:540px}
+.feat{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:14px;backdrop-filter:blur(10px);transition:all .25s}
+.feat:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
+.feat-ic{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,rgba(58,154,245,.28),rgba(58,154,245,.10));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid rgba(58,154,245,.2)}
+.feat-t{font-size:13px;font-weight:600;margin-bottom:2px;color:#fff}
+.feat-d{font-size:11px;color:rgba(255,255,255,.55);line-height:1.45}
+
+.brand-bot{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;color:rgba(255,255,255,.4);font-size:11px}
+.brand-bot-l{font-family:var(--mono)}
+.brand-bot-stats{display:flex;gap:26px}
+.bs-i{text-align:right}
+.bs-v{font-family:var(--mono);font-weight:600;font-size:18px;color:#fff;letter-spacing:-.01em;line-height:1}
+.bs-l{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;letter-spacing:.05em;text-transform:uppercase}
+
+/* ─── RIGHT LOGIN PANEL ─── */
+.login{display:flex;align-items:center;justify-content:center;padding:32px;background:linear-gradient(135deg,var(--white),var(--surf))}
+.login-card{width:100%;max-width:400px;display:flex;flex-direction:column;gap:0}
+.lc-h{font-family:var(--serif);font-style:italic;font-size:34px;font-weight:500;color:var(--ink);letter-spacing:-.02em;line-height:1.1;margin-bottom:6px}
+.lc-d{font-size:14px;color:var(--ink3);margin-bottom:30px;line-height:1.5}
+
+.lc-tabs{display:flex;gap:2px;background:var(--surf);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:24px}
+.lc-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;border-radius:8px;transition:all .15s}
+.lc-tab.on{background:var(--white);color:var(--ink);box-shadow:0 1px 3px rgba(8,40,90,.08)}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px}
+.field-input{position:relative}
+.field-input input{width:100%;padding:12px 14px 12px 42px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--font);font-size:14px;color:var(--ink);background:var(--white);outline:none;transition:all .15s}
+.field-input input:focus{border-color:var(--b500);box-shadow:0 0 0 4px rgba(58,154,245,.10)}
+.field-input input::placeholder{color:var(--ink4)}
+.field-input svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--ink3);pointer-events:none}
+.field-input .toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink3);cursor:pointer;background:none;border:none;padding:0;display:flex;align-items:center;justify-content:center}
+.field-input .toggle-pw:hover{color:var(--b600)}
+
+.row-opts{display:flex;justify-content:space-between;align-items:center;margin:12px 0 22px;font-size:12px}
+.row-opts label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--ink2)}
+.row-opts input[type=checkbox]{width:14px;height:14px;accent-color:var(--b600);cursor:pointer}
+.row-opts a{color:var(--b700);text-decoration:none;font-weight:500}
+.row-opts a:hover{text-decoration:underline}
+
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--b800),var(--b600));color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(21,88,168,.25);letter-spacing:.01em}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(21,88,168,.35);background:linear-gradient(135deg,var(--b900),var(--b700))}
+.btn-login:active{transform:translateY(0)}
+.btn-login svg{width:16px;height:16px;transition:transform .2s}
+.btn-login:hover svg{transform:translateX(3px)}
+
+.divider{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--ink3);font-size:11px;letter-spacing:.05em}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.btn-sso{width:100%;padding:11px;background:var(--white);color:var(--ink2);border:1.5px solid var(--line);border-radius:10px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:9px}
+.btn-sso:hover{border-color:var(--b400);background:var(--b50);color:var(--b800)}
+.btn-sso svg{width:16px;height:16px}
+
+.signup{text-align:center;margin-top:24px;font-size:13px;color:var(--ink3)}
+.signup a{color:var(--b700);text-decoration:none;font-weight:600}
+.signup a:hover{text-decoration:underline}
+
+/* Demo banner */
+.demo-banner{margin-top:18px;padding:11px 14px;background:linear-gradient(135deg,var(--b50),#FFF8E1);border:1px solid var(--b200);border-radius:10px;font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:9px}
+.demo-banner-ic{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--gold),#FF9C42);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.demo-banner strong{color:var(--ink);font-weight:600}
+
+/* RESPONSIVE */
+@media (max-width:980px){
+  html,body{height:auto;overflow:auto}
+  .wrap{grid-template-columns:1fr;height:auto;min-height:100vh}
+  .brand{padding:32px 28px;min-height:auto}
+  .brand-h{font-size:42px}
+  .brand-feat{grid-template-columns:1fr;gap:10px;margin-top:30px}
+  .deco{display:none}
+  .login{padding:32px 24px;min-height:auto}
+}
+
+/* loading spinner on submit */
+.spin{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spinner .7s linear infinite}
+.btn-login.loading .btn-text,.btn-login.loading svg{display:none}
+.btn-login.loading .spin{display:inline-block}
+@keyframes spinner{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- LEFT — BRAND PANEL -->
+  <div class="brand">
+    <div class="dots"></div>
+
+    <div class="deco">
+      <svg viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="90" stroke="rgba(255,255,255,.3)" stroke-width=".5"/>
+        <circle cx="100" cy="100" r="70" stroke="rgba(255,255,255,.3)" stroke-width=".5"/>
+        <circle cx="100" cy="100" r="50" stroke="rgba(255,255,255,.3)" stroke-width=".5"/>
+        <circle cx="100" cy="100" r="30" stroke="rgba(255,255,255,.3)" stroke-width=".5"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
+        <circle cx="100" cy="30" r="3" fill="#FFD66B"/>
+        <circle cx="170" cy="100" r="3" fill="#5ADBAA"/>
+        <circle cx="100" cy="170" r="3" fill="#68B5FA"/>
+        <circle cx="30" cy="100" r="3" fill="#9B7EE8"/>
+      </svg>
+    </div>
+
+    <!-- TOP: logo -->
+    <div class="brand-top">
+      <img class="brand-logo" id="brand-logo-img" alt="Reattivo NPL">
+      <div class="brand-name">Reattivo NPL<span>Due Diligence Platform</span></div>
+    </div>
+
+    <!-- CENTER: tagline + value -->
+    <div class="brand-mid">
+      <div class="brand-tag">
+        <span class="brand-tag-dot"></span>
+        PIATTAFORMA AI · ITALIA
+      </div>
+      <h1 class="brand-h">
+        La <span class="accent">casa</span><br>degli <span class="accent">NPL</span>
+      </h1>
+      <p class="brand-sub">
+        Automazione documentale, analisi di mercato in tempo reale e gestione completa
+        del portafoglio Non-Performing Loans. Tutto in un'unica piattaforma intelligente.
+      </p>
+
+      <div class="brand-feat">
+        <div class="feat">
+          <div class="feat-ic">📄</div>
+          <div>
+            <div class="feat-t">Pipeline documentale AI</div>
+            <div class="feat-d">Deduplica, OCR, categorizzazione automatica</div>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-ic">🧠</div>
+          <div>
+            <div class="feat-t">Agente NPL</div>
+            <div class="feat-d">Analisi portafoglio, OMI, prezzi di mercato</div>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-ic">🏛️</div>
+          <div>
+            <div class="feat-t">Integrazione Ifis NPL</div>
+            <div class="feat-d">Sincronizzazione dati e documenti automatica</div>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-ic">👥</div>
+          <div>
+            <div class="feat-t">Team & Permessi</div>
+            <div class="feat-d">Ruoli, accessi granulari, audit completo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM: footer + stats -->
+    <div class="brand-bot">
+      <div class="brand-bot-l">© 2026 Reattivo NPL — v.1.0</div>
+      <div class="brand-bot-stats">
+        <div class="bs-i"><div class="bs-v">€4.2M</div><div class="bs-l">Gestiti</div></div>
+        <div class="bs-i"><div class="bs-v">847h</div><div class="bs-l">Risparmiate</div></div>
+        <div class="bs-i"><div class="bs-v">97%</div><div class="bs-l">Accuracy AI</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT — LOGIN PANEL -->
+  <div class="login">
+    <div class="login-card">
+      <h2 class="lc-h">Bentornato</h2>
+      <p class="lc-d">Accedi al tuo workspace per gestire portafogli, documenti e analisi.</p>
+
+      <div class="lc-tabs">
+        <div class="lc-tab on">Accedi</div>
+        <div class="lc-tab" onclick="alert('Per richiedere un account demo contatta il team commerciale.')">Richiedi accesso</div>
+      </div>
+
+      <form id="login-form" onsubmit="return doLogin(event)">
+        <div class="field">
+          <label for="email">Email aziendale</label>
+          <div class="field-input">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+            <input type="email" id="email" placeholder="nome@reattivonpl.it" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="field-input">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+            <button type="button" class="toggle-pw" onclick="togPw()" id="pw-toggle" aria-label="Mostra password">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="row-opts">
+          <label><input type="checkbox" checked> Resta connesso</label>
+          <a href="#" onclick="event.preventDefault();alert('Il link di reset arriva via email.')">Password dimenticata?</a>
+        </div>
+
+        <button type="submit" class="btn-login" id="btn-login">
+          <span class="btn-text">Accedi al workspace</span>
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span class="spin"></span>
+        </button>
+      </form>
+
+      <div class="divider">OPPURE</div>
+
+      <button class="btn-sso" onclick="doLogin()">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M21.8 12.23c0-.74-.07-1.45-.19-2.13H12v4.03h5.5a4.7 4.7 0 01-2.04 3.08v2.55h3.3c1.93-1.78 3.04-4.4 3.04-7.53z" fill="#4285F4"/>
+          <path d="M12 22c2.76 0 5.07-.92 6.76-2.48l-3.3-2.55c-.92.62-2.1.98-3.46.98-2.66 0-4.92-1.8-5.72-4.21H2.87v2.63A9.99 9.99 0 0012 22z" fill="#34A853"/>
+          <path d="M6.28 13.74a6 6 0 010-3.48V7.63H2.87a9.99 9.99 0 000 8.74l3.4-2.63z" fill="#FBBC05"/>
+          <path d="M12 5.78c1.5 0 2.85.52 3.91 1.53l2.93-2.93C17.06 2.74 14.75 1.83 12 1.83a9.99 9.99 0 00-9.13 5.8l3.4 2.63c.81-2.41 3.07-4.21 5.73-4.21z" fill="#EA4335"/>
+        </svg>
+        Accedi con Google
+      </button>
+
+      <div class="signup">
+        Non hai un account? <a href="#" onclick="event.preventDefault();alert('Contatta il team commerciale per richiedere accesso.')">Richiedi una demo</a>
+      </div>
+
+      <div class="demo-banner">
+        <div class="demo-banner-ic">✨</div>
+        <div><strong>Demo aperta:</strong> clicca "Accedi" anche con campi vuoti per esplorare la piattaforma.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Embed logo as base64 (loaded asynchronously to keep DOM small)
+document.getElementById('brand-logo-img').src = "data:image/png;base64,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";
+
+function togPw(){
+  var inp = document.getElementById('password');
+  var btn = document.getElementById('pw-toggle');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  } else {
+    inp.type = 'password';
+    btn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  }
+}
+
+function doLogin(e){
+  if (e) e.preventDefault();
+  var btn = document.getElementById('btn-login');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  // Simulated auth delay then go to app
+  setTimeout(function(){
+    window.location.href = './app.html';
+  }, 700);
+  return false;
+}
+
+// Allow Enter key to login from anywhere
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
