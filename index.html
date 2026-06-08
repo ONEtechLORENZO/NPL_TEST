@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reattivo NPL — La casa degli NPL</title>
+<title>REATTIVO CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
@@ -127,6 +127,18 @@ body{font-family:var(--font);color:var(--ink);background:var(--white);-webkit-fo
   .deco{display:none}
   .login{padding:32px 24px;min-height:auto}
 }
+@media (max-width:480px){
+  .brand{padding:24px 20px}
+  .brand-h{font-size:34px;line-height:1.1}
+  .brand-mid{max-width:100%}
+  .brand-feat{display:none}
+  .brand-bot{display:none}
+  .brand-tag{font-size:10px;padding:5px 11px}
+  .login{padding:20px 16px}
+  .login-card{max-width:100%}
+  .lc-tabs{margin-bottom:18px}
+  .brand-top{padding-bottom:16px}
+}
 
 /* loading spinner on submit */
 .spin{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spinner .7s linear infinite}
@@ -160,8 +172,8 @@ body{font-family:var(--font);color:var(--ink);background:var(--white);-webkit-fo
 
     <!-- TOP: logo -->
     <div class="brand-top">
-      <img class="brand-logo" id="brand-logo-img" alt="Reattivo NPL">
-      <div class="brand-name">Reattivo NPL<span>Due Diligence Platform</span></div>
+      <img class="brand-logo" id="brand-logo-img" alt="REATTIVO CRM">
+      <div class="brand-name">REATTIVO CRM<span>NPL Platform</span></div>
     </div>
 
     <!-- CENTER: tagline + value -->
@@ -171,7 +183,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--white);-webkit-fo
         PIATTAFORMA AI · ITALIA
       </div>
       <h1 class="brand-h">
-        La <span class="accent">casa</span><br>degli <span class="accent">NPL</span>
+        <span class="accent">REATTIVO</span><br>CRM
       </h1>
       <p class="brand-sub">
         Automazione documentale, analisi di mercato in tempo reale e gestione completa
@@ -212,7 +224,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--white);-webkit-fo
 
     <!-- BOTTOM: footer + stats -->
     <div class="brand-bot">
-      <div class="brand-bot-l">© 2026 Reattivo NPL — v.1.0</div>
+      <div class="brand-bot-l">© 2026 REATTIVO CRM — v.1.0</div>
       <div class="brand-bot-stats">
         <div class="bs-i"><div class="bs-v">€4.2M</div><div class="bs-l">Gestiti</div></div>
         <div class="bs-i"><div class="bs-v">847h</div><div class="bs-l">Risparmiate</div></div>
@@ -262,6 +274,9 @@ body{font-family:var(--font);color:var(--ink);background:var(--white);-webkit-fo
           <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           <span class="spin"></span>
         </button>
+        <div id="login-error" style="display:none;align-items:center;gap:8px;background:#FEE8EA;border:1px solid rgba(201,48,64,.25);border-radius:8px;padding:10px 14px;font-size:13px;color:#C93040;margin-top:8px">
+          <span>⚠️</span><span>Email o password non corretti. Riprova.</span>
+        </div>
       </form>
 
       <div class="divider">OPPURE</div>
@@ -305,20 +320,57 @@ function togPw(){
   }
 }
 
-function doLogin(e){
+// ── CREDENZIALI AUTORIZZATE ──
+// Per aggiungere utenti: aggiungi una riga { email, password, name, role }
+var USERS = [
+  { email: 'admin@reattivonpl.it',    password: 'Reattivo2026!',  name: 'Admin',           role: 'Amministratore' },
+  { email: 'g.rossi@reattivonpl.it',  password: 'GRossi2026#',    name: 'Giovanni Rossi',  role: 'Manager' },
+  { email: 'm.lombardi@reattivonpl.it',password: 'MLombardi26@',  name: 'Maria Lombardi',  role: 'Operatore' },
+  { email: 'f.bianchi@reattivonpl.it', password: 'FBianchi26$',   name: 'Francesco Bianchi',role: 'Operatore' },
+  { email: 'demo@reattivonpl.it',      password: 'Demo2026!',      name: 'Demo User',       role: 'Solo lettura' }
+];
+
+function doLogin(e) {
   if (e) e.preventDefault();
+  var email    = document.getElementById('email').value.trim().toLowerCase();
+  var password = document.getElementById('password').value;
+  var errEl    = document.getElementById('login-error');
+
+  // Cerca utente
+  var user = USERS.find(function(u) {
+    return u.email.toLowerCase() === email && u.password === password;
+  });
+
+  if (!user) {
+    // Credenziali errate
+    errEl.style.display = 'flex';
+    var pwField = document.getElementById('password');
+    pwField.value = '';
+    pwField.style.borderColor = '#C93040';
+    setTimeout(function(){ pwField.style.borderColor = ''; }, 2000);
+    return false;
+  }
+
+  // Credenziali corrette — salva sessione e vai all'app
+  errEl.style.display = 'none';
+  sessionStorage.setItem('crm_user', JSON.stringify({ email: user.email, name: user.name, role: user.role }));
+
   var btn = document.getElementById('btn-login');
   btn.classList.add('loading');
   btn.disabled = true;
-  // Simulated auth delay then go to app
-  setTimeout(function(){
+
+  setTimeout(function() {
     window.location.href = './app.html';
-  }, 700);
+  }, 600);
+
   return false;
 }
 
+// Blocca accesso diretto ad app.html senza sessione
+// (aggiungere questo controllo anche in app.html)
+
 // Allow Enter key to login from anywhere
-document.addEventListener('keydown', function(e){
+document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doLogin();
 });
 </script>
