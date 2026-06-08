@@ -943,6 +943,78 @@ hr.d{border:none;border-top:1px solid var(--line2);margin:.75rem 0}
   var u = sessionStorage.getItem("crm_user");
   if (!u) { window.location.replace("./index.html"); }
 })();
+
+// ── openSettings disponibile subito (prima del banner) ──
+function openSettings() {
+  var modal = document.getElementById('modal-settings');
+  if (modal) { modal.classList.add('on'); _fillSettingsModal(); return; }
+  modal = document.createElement('div');
+  modal.className = 'modal-bg on';
+  modal.id = 'modal-settings';
+  modal.onclick = function(e){ if(e.target===this) this.classList.remove('on'); };
+  modal.innerHTML = [
+    '<div class="modal" style="max-width:520px">',
+    '<div class="modal-title">⚙️ Configura API Key</div>',
+    '<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#1E40AF;line-height:1.6">',
+    'La chiave viene salvata <strong>solo nel tuo browser</strong> (localStorage). Non passa mai da nessun server esterno.',
+    '</div>',
+    '<div class="field"><label>Anthropic API Key</label>',
+    '<div style="position:relative">',
+    '<input id="settings-api-key" type="password" placeholder="sk-ant-api03-..." style="font-family:monospace;font-size:13px;padding-right:80px" autocomplete="off">',
+    '<button type="button" onclick="var i=document.getElementById(\'settings-api-key\');i.type=i.type===\'password\'?\'text\':\'password\';this.textContent=i.type===\'password\'?\'Mostra\':\'Nascondi\'" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#1558A8;font-size:11px;font-weight:600;cursor:pointer">Mostra</button>',
+    '</div>',
+    '<div id="settings-key-status" style="font-size:11px;margin-top:5px"></div></div>',
+    '<div class="field"><label>Agent ID (NPL Expert) <span style="color:#7A96B0;font-weight:400">— opzionale</span></label>',
+    '<input id="settings-agent-id" type="text" placeholder="agent_01..." style="font-family:monospace;font-size:13px">',
+    '<div style="font-size:11px;color:#7A96B0;margin-top:4px">console.anthropic.com → Agents → copia l\'ID</div></div>',
+    '<div style="background:#F4F8FD;border:1px solid #D8E8F5;border-radius:9px;padding:11px 14px;font-size:12px;color:#3A5070">',
+    '📍 <strong>Dove trovare la chiave:</strong> <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:#1558A8">console.anthropic.com → API Keys</a>',
+    '</div>',
+    '<div class="modal-foot" style="margin-top:16px">',
+    '<button class="btn btn-ou" onclick="document.getElementById(\'modal-settings\').classList.remove(\'on\')">Chiudi</button>',
+    '<button class="btn btn-ou" style="color:#C93040;border-color:rgba(201,48,64,.3)" onclick="if(confirm(\'Rimuovere la chiave salvata?\')){localStorage.removeItem(\'crm_api_key\');localStorage.removeItem(\'crm_agent_id\');document.getElementById(\'modal-settings\').classList.remove(\'on\');location.reload();}">🗑 Rimuovi</button>',
+    '<button class="btn btn-pr" onclick="_doSaveSettings()">💾 Salva</button>',
+    '</div></div>'
+  ].join('');
+  document.body.appendChild(modal);
+  _fillSettingsModal();
+}
+
+function _doSaveSettings() {
+  var k = document.getElementById('settings-api-key').value.trim();
+  var a = document.getElementById('settings-agent-id').value.trim();
+  if (!k || !k.startsWith('sk-ant-')) {
+    alert('Chiave non valida — deve iniziare con sk-ant-');
+    return;
+  }
+  localStorage.setItem('crm_api_key', k);
+  if (a && a.startsWith('agent_')) localStorage.setItem('crm_agent_id', a);
+  document.getElementById('modal-settings').classList.remove('on');
+  var banner = document.getElementById('api-banner');
+  if (banner) {
+    banner.style.background = 'linear-gradient(90deg,#E8FAF3,#F0FDF7)';
+    banner.style.borderBottom = '1px solid rgba(15,169,110,.2)';
+    banner.innerHTML = '<span>✅</span><span style="color:#087A4F;font-weight:600;font-size:12px">NPL Expert Agent attivo — agenti documenti operativi</span><button onclick="openSettings()" style="margin-left:auto;background:none;border:none;font-size:11px;color:#7A96B0;cursor:pointer;text-decoration:underline">⚙️ Modifica chiave</button>';
+  }
+  alert('✅ Chiave API salvata!');
+}
+
+function _fillSettingsModal() {
+  var key = localStorage.getItem('crm_api_key') || '';
+  var agent = localStorage.getItem('crm_agent_id') || 'agent_01UzNepYGb8mfoc9taVh8HRY';
+  var keyInp = document.getElementById('settings-api-key');
+  var agentInp = document.getElementById('settings-agent-id');
+  var status = document.getElementById('settings-key-status');
+  if (keyInp) keyInp.value = key;
+  if (agentInp) agentInp.value = agent;
+  if (status) {
+    status.innerHTML = key
+      ? '<span style="color:#087A4F">✓ Chiave attuale: ' + key.slice(0,14) + '••••' + key.slice(-4) + '</span>'
+      : '<span style="color:#D97B00">⚠️ Nessuna chiave configurata</span>';
+  }
+}
+
+
 </script>
 
 <aside class="sb">
@@ -980,9 +1052,9 @@ hr.d{border:none;border-top:1px solid var(--line2);margin:.75rem 0}
       <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h4.5a1.5 1.5 0 010 3H9m0 0h5.5a1.5 1.5 0 010 3H9"/></svg>
       Crediti
     </div>
-    <div class="ni">
-      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Impostazioni
+    <div class="ni" onclick="openSettings()">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Impostazioni API
     </div>
   </nav>
   <div class="sb-foot">
@@ -998,11 +1070,25 @@ hr.d{border:none;border-top:1px solid var(--line2);margin:.75rem 0}
 
 <main class="main">
 <!-- ── API KEY BANNER ── -->
-<div id="api-banner" style="background:linear-gradient(90deg,#E8FAF3,#F0FDF7);border-bottom:1px solid rgba(15,169,110,.2);padding:9px 24px;display:flex;align-items:center;gap:10px;font-size:12px">
-  <span>✅</span>
-  <span style="color:#087A4F;font-weight:600;font-size:12px">NPL Expert Agent attivo — agente specializzato NPL collegato · agenti documenti operativi</span>
-  <span style="margin-left:auto;background:#E8FAF3;border:1px solid rgba(15,169,110,.3);color:#087A4F;font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600">🤖 NPL Expert</span>
+<div id="api-banner" style="background:linear-gradient(90deg,#FEF3DC,#FFFAEF);border-bottom:1px solid rgba(232,163,23,.3);padding:9px 24px;display:flex;align-items:center;gap:10px;font-size:12px">
+  <span>🔑</span>
+  <span style="color:#7A5000;font-weight:500;font-size:12px">Configura la tua API Key Anthropic per attivare gli agenti AI</span>
+  <button onclick="openSettings()" style="margin-left:auto;background:#E8A317;color:#fff;border:none;padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer">⚙️ Configura API Key</button>
 </div>
+<script>
+// Aggiorna banner subito se chiave già presente
+(function(){
+  var k = localStorage.getItem('crm_api_key');
+  if (k) {
+    var b = document.getElementById('api-banner');
+    if (b) {
+      b.style.background = 'linear-gradient(90deg,#E8FAF3,#F0FDF7)';
+      b.style.borderBottom = '1px solid rgba(15,169,110,.2)';
+      b.innerHTML = '<span>✅</span><span style="color:#087A4F;font-weight:600;font-size:12px">NPL Expert Agent attivo — agenti documenti operativi</span><button onclick="openSettings()" style="margin-left:auto;background:none;border:none;font-size:11px;color:#7A96B0;cursor:pointer;text-decoration:underline">⚙️ Modifica chiave</button>';
+    }
+  }
+})();
+</script>
   <div class="topbar">
     <div style="display:flex;align-items:center">
       <div class="pg-title" id="pg-title">Dashboard</div>
@@ -3054,36 +3140,54 @@ function updSum(){ _refreshBilling(sCr); }
 // ══════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════
-// CONFIGURAZIONE AGENTE NPL SPECIALIZZATO
+// CONFIGURAZIONE API — chiave da localStorage
 // ══════════════════════════════════════════════════
-const _NK = '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';
 const _AID = 'agent_01UzNepYGb8mfoc9taVh8HRY';
 
-// ── API KEY per agenti documenti (inserita dall'utente nel banner) ──
-function getApiKey() { return sessionStorage.getItem('npl_key') || _NK; }
+function getApiKey() {
+  return localStorage.getItem('crm_api_key') || sessionStorage.getItem('npl_key') || '';
+}
+function getAgentId() {
+  return localStorage.getItem('crm_agent_id') || _AID;
+}
 
 function saveApiKey() {
-  const k = document.getElementById('api-key-inp').value.trim();
-  if (!k.startsWith('sk-ant-')) { showToast('⚠️ Chiave non valida — deve iniziare con sk-ant-','warn'); return; }
-  sessionStorage.setItem('npl_key', k);
+  const k = document.getElementById('api-key-inp')?.value.trim();
+  if (!k || !k.startsWith('sk-ant-')) { showToast('⚠️ Chiave non valida','warn'); return; }
+  localStorage.setItem('crm_api_key', k);
   _showBannerActive('API Key attiva');
-  showToast('✅ Chiave salvata! Agenti documenti operativi.','success');
+  showToast('✅ Chiave salvata!','success');
+}
+
+function saveApiKeySettings(key, agentId) {
+  if (!key || !key.startsWith('sk-ant-')) {
+    showToast('⚠️ Chiave non valida — deve iniziare con sk-ant-', 'warn');
+    return false;
+  }
+  localStorage.setItem('crm_api_key', key.trim());
+  if (agentId && agentId.startsWith('agent_')) localStorage.setItem('crm_agent_id', agentId.trim());
+  _showBannerActive('NPL Expert Agent attivo');
+  showToast('✅ Chiave API salvata!', 'success');
+  return true;
 }
 
 function _showBannerActive(label) {
   const banner = document.getElementById('api-banner');
   if (!banner) return;
-  banner.innerHTML = `<span>✅</span>
-    <span style="color:#087A4F;font-weight:600;font-size:12px">${label} — agenti documenti e NPL Expert operativi</span>
-    <button onclick="sessionStorage.clear();location.reload()" style="margin-left:auto;background:none;border:none;font-size:11px;color:#7A96B0;cursor:pointer">Rimuovi</button>`;
   banner.style.background = 'linear-gradient(90deg,#E8FAF3,#F0FDF7)';
   banner.style.borderBottom = '1px solid rgba(15,169,110,.2)';
+  banner.innerHTML = `<span>✅</span><span style="color:#087A4F;font-weight:600;font-size:12px">${label} — agenti documenti e NPL Expert operativi</span><button onclick="openSettings()" style="margin-left:auto;background:none;border:none;font-size:11px;color:#7A96B0;cursor:pointer;text-decoration:underline">⚙️ Modifica chiave</button>`;
 }
 
-// ── callClaude — usato SOLO per agenti documenti ──
+
+
+// ── callClaude — usato per agenti documenti ──
 async function callClaude(system, messages, useWebSearch = false) {
   const key = getApiKey();
-  if (!key) throw new Error('API Key mancante — inseriscila nel banner');
+  if (!key) {
+    openSettings();
+    throw new Error('API Key mancante — configurala nel pannello impostazioni');
+  }
   const body = { model:'claude-sonnet-4-20250514', max_tokens:1500, system, messages };
   if (useWebSearch) body.tools = [{ type:'web_search_20250305', name:'web_search' }];
   const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3485,11 +3589,11 @@ async function biSendQ(text) {
 
   try {
     // Chiama il tuo agente specializzato NPL Expert
-    const res = await fetch('https://api.anthropic.com/v1/agents/' + _AID + '/sessions', {
+    const res = await fetch('https://api.anthropic.com/v1/agents/' + getAgentId() + '/sessions', {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'x-api-key': _NK,
+        'x-api-key': getApiKey(),
         'anthropic-version':'2023-06-01',
         'anthropic-beta':'agents-2025-05-01',
         'anthropic-dangerous-direct-browser-access':'true'
@@ -4349,6 +4453,11 @@ document.addEventListener('DOMContentLoaded', () => {
   wireProjectCards();
   fixInviteButton();
   setupCommentInput();
+  // Check API key on load and update banner
+  const _storedKey = getApiKey();
+  if (_storedKey) {
+    _showBannerActive('NPL Expert Agent attivo');
+  }
   // Fix all alert() buttons
   document.querySelectorAll('[onclick*="alert(\'Carica documenti\')"]').forEach(b => {
     b.onclick = () => document.getElementById('real-file-input').click();
