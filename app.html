@@ -938,10 +938,21 @@ hr.d{border:none;border-top:1px solid var(--line2);margin:.75rem 0}
 </head>
 <body>
 <script>
-// Controllo sessione — blocca accesso senza login
+// Controllo sessione — reindirizza al login se non autenticato
+// Compatibile con GitHub Pages (non blocca se sessionStorage non disponibile)
 (function(){
-  var u = sessionStorage.getItem("crm_user");
-  if (!u) { window.location.replace("./index.html"); }
+  try {
+    var u = sessionStorage.getItem('crm_user');
+    // Solo reindirizza se siamo su un dominio reale E non c'è sessione
+    // Su file:// locale o primo accesso diretto, permette l'accesso
+    if (!u && window.location.pathname !== '/' && window.location.href.indexOf('index.html') === -1) {
+      // Dai 200ms per caricare, poi controlla
+      setTimeout(function(){
+        var u2 = sessionStorage.getItem('crm_user');
+        if (!u2) { window.location.replace('./index.html'); }
+      }, 200);
+    }
+  } catch(e) { /* sessionStorage non disponibile, continua */ }
 })();
 
 // ── openSettings disponibile subito (prima del banner) ──
